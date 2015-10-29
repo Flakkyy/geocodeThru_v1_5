@@ -158,23 +158,23 @@ namespace GeocodeThru
         /// <param name="e"></param>
         private void mItem_Start_Click(object sender, RoutedEventArgs e)
         {
-            Task.Factory.StartNew(StartGeocoding);
             //Task.Factory.StartNew(StartGeocoding);
-            //Thread startBtnGeocod = new Thread(StartGeocoding);
-            //startBtnGeocod.Start();
+            //Task.Factory.StartNew(StartGeocoding);
+            Thread startBtnGeocod = new Thread(StartGeocoding);
+            startBtnGeocod.Start();
         }
 
         public void StartGeocoding()
         {
             try
             {
-                Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
+                Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
                 //delegate
                 {
                     if (CbxRuain.IsChecked.Value == true || CbxOsm.IsChecked.Value == true || CbxMq.IsChecked.Value == true || CbxMcz.IsChecked.Value == true || CbxHm.IsChecked.Value == true || CbxGm.IsChecked.Value == true || CbxBm.IsChecked.Value == true)
                     {
-                        if (CbxUlice.Text == "" && CbxCp.Text == "" && CbxCo.Text == "" && CbxObec.Text == ""
-                            && CbxPsc.Text == "")
+                        if (CbxUlice.Text.Equals("") && CbxCp.Text.Equals("") && CbxCo.Text.Equals("") && CbxObec.Text.Equals("")
+                            && CbxPsc.Text.Equals(""))
                         {
                             WarningMsg("Fill atleast one drop-down menu!");
                             FlashRectangle(RectDropdowns);
@@ -970,7 +970,7 @@ namespace GeocodeThru
             {
                 try
                 {
-                    if (CheckForInternetConnection() == true)
+                    if (CheckForInternetConnection() == false)
                     {
                         MenuOpen.IsEnabled = false;
                         RtbProgress.AppendText("You don't have an Internet connection.\r");

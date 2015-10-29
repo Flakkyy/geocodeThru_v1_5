@@ -54,24 +54,24 @@
         <GroupBox x:Name="GrbColMap" Header="Column mapping" Grid.Row="3" Grid.Column="0" Margin="5,0,5,5" IsEnabled="False">
             <StackPanel Margin="5">
                 <StackPanel Margin="0" Orientation="Horizontal" HorizontalAlignment="Center">
-                    <TextBlock Margin="5,5,10,5" Text="Ulice / Street" Width="200" FlowDirection="RightToLeft"/>
-                    <ComboBox x:Name="CbxUlice" Margin="5" Width="120" />
+                    <TextBlock Margin="5" Text="Ulice / Street" Width="200" FlowDirection="RightToLeft"/>
+                    <ComboBox x:Name="CbxUlice" Margin="5" Width="150" />
                 </StackPanel>
                 <StackPanel Margin="0" Orientation="Horizontal" HorizontalAlignment="Center">
-                    <TextBlock Margin="5,5,10,5" Text="Číslo popisné / Land registry number" Width="200" FlowDirection="RightToLeft"/>
-                    <ComboBox x:Name="CbxCp" Margin="5" Width="120" />
+                    <TextBlock Margin="5" Text="Číslo popisné / Land registry number" Width="200" FlowDirection="RightToLeft"/>
+                    <ComboBox x:Name="CbxCp" Margin="5" Width="150" />
                 </StackPanel>
                 <StackPanel Margin="0" Orientation="Horizontal" HorizontalAlignment="Center">
-                    <TextBlock Margin="5,5,10,5" Text="Číslo orientační / House number" Width="200" FlowDirection="RightToLeft"/>
-                    <ComboBox x:Name="CbxCo" Margin="5" Width="120" />
+                    <TextBlock Margin="5" Text="Číslo orientační / House number" Width="200" FlowDirection="RightToLeft"/>
+                    <ComboBox x:Name="CbxCo" Margin="5" Width="150" />
                 </StackPanel>
                 <StackPanel Margin="0" Orientation="Horizontal" HorizontalAlignment="Center">
-                    <TextBlock Margin="5,5,10,5" Text="Obec / City" Width="200" FlowDirection="RightToLeft"/>
-                    <ComboBox x:Name="CbxObec" Margin="5" Width="120" />
+                    <TextBlock Margin="5" Text="Obec / City" Width="200" FlowDirection="RightToLeft"/>
+                    <ComboBox x:Name="CbxObec" Margin="5" Width="150" />
                 </StackPanel>
                 <StackPanel Margin="0" Orientation="Horizontal" HorizontalAlignment="Center">
-                    <TextBlock Margin="5,5,10,5" Text="PSČ / Postal code" Width="200" FlowDirection="RightToLeft"/>
-                    <ComboBox x:Name="CbxPsc" Margin="5" Width="120" />
+                    <TextBlock Margin="5" Text="PSČ / Postal code" Width="200" FlowDirection="RightToLeft"/>
+                    <ComboBox x:Name="CbxPsc" Margin="5" Width="150" />
                 </StackPanel>
             </StackPanel>
         </GroupBox>
