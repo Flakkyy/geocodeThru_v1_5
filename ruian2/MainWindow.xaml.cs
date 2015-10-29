@@ -158,10 +158,10 @@ namespace GeocodeThru
         /// <param name="e"></param>
         private void mItem_Start_Click(object sender, RoutedEventArgs e)
         {
+            Task.Factory.StartNew(StartGeocoding);
             //Task.Factory.StartNew(StartGeocoding);
-            //Task.Factory.StartNew(StartGeocoding);
-            Thread startBtnGeocod = new Thread(StartGeocoding);
-            startBtnGeocod.Start();
+            //Thread startBtnGeocod = new Thread(StartGeocoding);
+            //startBtnGeocod.Start();
         }
 
         public void StartGeocoding()
