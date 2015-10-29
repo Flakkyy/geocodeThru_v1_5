@@ -50,7 +50,7 @@
 
             </Menu>
         </DockPanel>
-        <RichTextBox x:Name="RtbProgress" Grid.Column="1" Grid.Row="2" Margin="0,0,0,10" IsReadOnly="True" VerticalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Visible" Height="380" VerticalAlignment="Bottom" HorizontalContentAlignment="Stretch" MinWidth="0" Width="360" HorizontalAlignment="Left" Grid.RowSpan="3"/>
+        <RichTextBox x:Name="RtbProgress" Grid.Column="1" Grid.Row="2" Margin="0,0,0,10" IsReadOnly="True" VerticalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Visible" Height="360" VerticalAlignment="Bottom" HorizontalContentAlignment="Stretch" MinWidth="0" Width="360" HorizontalAlignment="Left" Grid.RowSpan="3"/>
         <GroupBox x:Name="GrbColMap" Header="Column mapping" Grid.Row="3" Grid.Column="0" Margin="5,0,5,5" IsEnabled="False">
             <StackPanel Margin="5">
                 <StackPanel Margin="0" Orientation="Horizontal" HorizontalAlignment="Center">
@@ -81,8 +81,7 @@
             </StackPanel>
         </GroupBox>
 
-        <GroupBox x:Name="GrbApis" Header="APIs" Padding="0" Margin="5,31,0,0" VerticalAlignment="Top" Height="45" Grid.ColumnSpan="2" Grid.Column="0" IsEnabled="False"
-                  Grid.Row="0" Grid.RowSpan="2" HorizontalAlignment="Left" Width="747">
+        <GroupBox x:Name="GrbApis" Header="APIs" Padding="0" Margin="5,31,0,0" VerticalAlignment="Top" Height="45" Grid.ColumnSpan="2" Grid.Column="0" IsEnabled="False" Grid.Row="0" Grid.RowSpan="2" HorizontalAlignment="Left" Width="747">
             <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
                 <CheckBox x:Name="CbxRuain" Content="RUIAN" HorizontalAlignment="Left" Margin="10,0,20,0" VerticalAlignment="Top" />
                 <CheckBox x:Name="CbxGm" Content="GoogleMapsV3" HorizontalAlignment="Left" Margin="0,0,20,0" VerticalAlignment="Top" IsEnabled="False" />
@@ -93,14 +92,24 @@
                 <CheckBox x:Name="CbxBm" Content="BingMaps" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" IsEnabled="False"/>
             </StackPanel>
         </GroupBox>
-        <StackPanel Grid.Row="2" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Center">
-            <TextBlock Text="From which row you want to start?" Height="16" Width="183" Margin="5,5,5,0" />
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <TextBox x:Name="TxtbxFromRow"  Width="70" Height="20" IsEnabled="False" PreviewTextInput="TxtbxFromRow_PreviewTextInput" Text="1" TextChanged="TxtbxFromRow_TextChanged" TextAlignment="Right" Margin="5,0,5,5" GotFocus="TxtbxFromRow_GotFocus" PreviewMouseDown="TxtbxFromRow_PreviewMouseDown" />
-                <TextBlock x:Name="TxtInterval" Text="[1 - ?]" Margin="5,2,5,5" />
+        <StackPanel Grid.Row="2" Grid.Column="1" VerticalAlignment="Top" Orientation="Horizontal">
+            <StackPanel>
+                <GroupBox x:Name="GrbWgsOrSjtsk" Header="WGS or S-JSTK" Margin="5,0,5,5" IsEnabled="False">
+                    <StackPanel>
+                        <CheckBox x:Name="CbxWgs" Content="WGS" Margin="2" IsChecked="True"  />
+                        <CheckBox x:Name="CbxSjtsk" Content="S-JTSK" Margin="2" IsChecked="True"  />
+                    </StackPanel>
+                </GroupBox>
+            </StackPanel>
+            <StackPanel Margin="25,0,0,0">
+                <TextBlock Text="From which row you want to start?" Height="16" Width="183" Margin="5,5,5,0" />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <TextBox x:Name="TxtbxFromRow"  Width="70" Height="20" IsEnabled="False" PreviewTextInput="TxtbxFromRow_PreviewTextInput" Text="1" TextChanged="TxtbxFromRow_TextChanged" TextAlignment="Right" Margin="5,0,5,5" GotFocus="TxtbxFromRow_GotFocus" PreviewMouseDown="TxtbxFromRow_PreviewMouseDown" />
+                    <TextBlock x:Name="TxtInterval" Text="[1 - ?]" Margin="5,2,5,5" />
+                </StackPanel>
             </StackPanel>
         </StackPanel>
-        <Rectangle x:Name="RectMethods" Grid.ColumnSpan="2" Grid.Column="0" HorizontalAlignment="Left" Height="34" Margin="10,9.8,0,0" Grid.Row="1" VerticalAlignment="Top" Width="722" Opacity="0.5" Visibility="Hidden">
+        <Rectangle x:Name="RectMethods" Grid.ColumnSpan="2" Grid.Column="0" HorizontalAlignment="Left" Height="34" Margin="10,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="743" Opacity="0.5" Visibility="Hidden">
             <Rectangle.Effect>
                 <BlurEffect Radius="15" KernelType="Box"/>
             </Rectangle.Effect>
@@ -108,7 +117,15 @@
                 <SolidColorBrush Color="Red" Opacity="0.5"/>
             </Rectangle.Fill>
         </Rectangle>
-        <Rectangle x:Name="RectDropdowns"  HorizontalAlignment="Left" Height="200" Margin="227,1.2,0,0" Grid.Row="3" VerticalAlignment="Top" Width="155" Grid.Column="0" Opacity="0.5" RenderTransformOrigin="0.476,0.48" Visibility="Hidden" Grid.RowSpan="2">
+        <Rectangle x:Name="RectDropdowns"  HorizontalAlignment="Left" Height="200" Margin="214,0,0,0" Grid.Row="3" VerticalAlignment="Top" Width="173" Grid.Column="0" Opacity="0.5" RenderTransformOrigin="0.476,0.48" Visibility="Hidden">
+            <Rectangle.Effect>
+                <BlurEffect Radius="15" KernelType="Box"/>
+            </Rectangle.Effect>
+            <Rectangle.Fill>
+                <SolidColorBrush Color="Red" Opacity="0.5"/>
+            </Rectangle.Fill>
+        </Rectangle>
+        <Rectangle x:Name="RectCoords"  HorizontalAlignment="Left" Height="68" Grid.Row="2" VerticalAlignment="Top" Width="107" Grid.Column="1" Opacity="0.5" RenderTransformOrigin="0.476,0.48" Visibility="Hidden">
             <Rectangle.Effect>
                 <BlurEffect Radius="15" KernelType="Box"/>
             </Rectangle.Effect>
