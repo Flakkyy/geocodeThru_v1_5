@@ -221,20 +221,30 @@ namespace GeocodeThru
                                     {
                                         CheckBox cbx = item as CheckBox;
                                         // ReSharper disable once PossibleNullReferenceException
-                                        if (cbx.Content.ToString() == "RUIAN")
+                                        //if (cbx.Content.ToString() == "RUIAN")
+                                        //{
+                                        if (CbxWgs.IsChecked.Value == true)
+                                        {
+                                            _excelWorkSheet.Cells[1, _columnCount + i + 1] = "lat_" + cbx.Content;
+                                            _excelWorkSheet.Cells[1, _columnCount + i + 2] = "lon_" + cbx.Content;
+                                            i += 2;
+                                        }
+                                        if (CbxSjtsk.IsChecked.Value == true)
                                         {
                                             _excelWorkSheet.Cells[1, _columnCount + i + 1] = "X_" + cbx.Content;
                                             _excelWorkSheet.Cells[1, _columnCount + i + 2] = "Y_" + cbx.Content;
                                             i += 2;
                                         }
-                                        else
-                                        {
-                                            _excelWorkSheet.Cells[1, _columnCount + i + 1] = "lat_" + cbx.Content;
-                                            _excelWorkSheet.Cells[1, _columnCount + i + 2] = "lon_" + cbx.Content;
-                                            _excelWorkSheet.Cells[1, _columnCount + i + 3] = "X_" + cbx.Content;
-                                            _excelWorkSheet.Cells[1, _columnCount + i + 4] = "Y_" + cbx.Content;
-                                            i += 4;
-                                        }
+
+                                        //}
+                                        //else
+                                        //{
+                                        //    _excelWorkSheet.Cells[1, _columnCount + i + 1] = "lat_" + cbx.Content;
+                                        //    _excelWorkSheet.Cells[1, _columnCount + i + 2] = "lon_" + cbx.Content;
+                                        //    _excelWorkSheet.Cells[1, _columnCount + i + 3] = "X_" + cbx.Content;
+                                        //    _excelWorkSheet.Cells[1, _columnCount + i + 4] = "Y_" + cbx.Content;
+                                        //    i += 4;
+                                        //}
 
                                     }
                                     // this sets starting row 
@@ -386,9 +396,30 @@ namespace GeocodeThru
                                             }
                                             else
                                             {
+                                                var x = Convert.ToDouble(xy[0].Insert(0, "-").Replace(".", ","));
+                                                var y = Convert.ToDouble(xy[1].Trim().Insert(0, "-").Replace(".", ","));
+                                                double[] xyTrans = new double[] { x,y };
+                                                //double[] xySjtsk = new double[] { Convert.ToDouble(xy[0].Insert(0, "-").Replace(".", ",")),
+                                                //                            Convert.ToDouble(xy[1].Trim().Insert(0, "-").Replace(".", ","))};
+
+                                                if (CbxWgs.IsChecked.Value == true)
+                                                {
+                                                    //Defines the ending coordiante system
+                                                    ProjectionInfo pStart = KnownCoordinateSystems.Projected.NationalGrids.SJTSKKrovakEastNorth;
+                                                    //Defines the starting coordiante system
+                                                    ProjectionInfo pEnd = KnownCoordinateSystems.Geographic.World.WGS1984;
+                                                    Reproject.ReprojectPoints(xyTrans, new double[] {1}, pStart, pEnd, 0, 1);
+                                                    coords.Add(xyTrans[1]);
+                                                    coords.Add(xyTrans[0]);     
+                                                }
                                                 // SJTSK coords
-                                                coords.Add(Convert.ToDouble(xy[0].Insert(0, "-").Replace(".", ",")));
-                                                coords.Add(Convert.ToDouble(xy[1].Trim().Insert(0, "-").Replace(".", ",")));
+                                                if (CbxSjtsk.IsChecked.Value == true)
+                                                {
+                                                    //coords.Add(Convert.ToDouble(xy[0].Insert(0, "-").Replace(".", ",")));
+                                                    //coords.Add(Convert.ToDouble(xy[1].Trim().Insert(0, "-").Replace(".", ",")));
+                                                    coords.Add(x);
+                                                    coords.Add(y);
+                                                }
                                             }
                                         }
                                         #endregion
@@ -561,13 +592,19 @@ namespace GeocodeThru
                 double[] xy = new double[] { Convert.ToDouble(RegexBetween(strSource,regexLot)),
                                           Convert.ToDouble(RegexBetween(strSource, regexLat))};
                 // adding lan and lon to the list 
-                coordsList.Add(xy[1]);
-                coordsList.Add(xy[0]);
+                if (CbxWgs.IsChecked.Value == true)
+                {
+                    coordsList.Add(xy[1]);
+                    coordsList.Add(xy[0]);
+                }
                 //Calls the reproject function that will transform the input location to the output locaiton
                 Reproject.ReprojectPoints(xy, z, pStart, pEnd, 0, 1);
                 // adding transformated (to sjtsk) lat and lot to list
-                coordsList.Add(xy[0]);
-                coordsList.Add(xy[1]);
+                if (CbxSjtsk.IsChecked.Value == true)
+                {
+                    coordsList.Add(xy[0]);
+                    coordsList.Add(xy[1]); 
+                }
             }
             catch (Exception ex)
             {
@@ -1015,8 +1052,8 @@ namespace GeocodeThru
                     }
                     else
                     {
-                // write this into richtextbox when is app successfully loaded
-                RtbProgress.AppendText("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r");
+                        // write this into richtextbox when is app successfully loaded
+                        RtbProgress.AppendText("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r");
                         RtbProgress.AppendText("Please CLOSE ALL Excel workbooks before geocoding.\rIf you have an open Excel during the process, errors can occur.\r");
                         RtbProgress.AppendText("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r");
                         RtbProgress.AppendText("Waiting for .xlsx to be loaded\r");
