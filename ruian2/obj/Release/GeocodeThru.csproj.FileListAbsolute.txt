@@ -112,3 +112,4 @@ D:\GitHub\geocodeThru_v1_5\ruian2\obj\Release\GeocodeThru.g.resources
 D:\GitHub\geocodeThru_v1_5\ruian2\obj\Release\GeocodeThru.AboutBox1.resources
 D:\GitHub\geocodeThru_v1_5\ruian2\obj\Release\GeocodeThru.Properties.Resources.resources
 D:\GitHub\geocodeThru_v1_5\ruian2\obj\Release\GeocodeThru.csproj.GenerateResource.Cache
+d:\Data\C-sharp\geocodeThru_v1_5\ruian2\bin\Release\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll
