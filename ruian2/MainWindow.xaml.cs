@@ -359,162 +359,237 @@ namespace GeocodeThru
                                         #endregion
                                         RtbProgress.AppendText("Adress: " + (ulice + " " + cp + "/" + co + " " + obec + " " + psc).Trim() + "\r");
                                         RtbProgress.ScrollToEnd();
-                                        #region ruain geocoding
-                                        if (CbxRuain.IsChecked.Value == true)
+                                        string adress = (ulice + " " + cp + " " + co + " " + obec + " " + psc).Trim();
+                                        if (adress.Equals(""))
                                         {
-                                            string geocodeRowRuian = (ulice + " " + cp + " " + co + " " + obec + " " + psc).Trim();
-                                            if (geocodeRowRuian == "") continue;
-                                            string[] xy;
-                                            // calling webclient for geocoding thru ruian
-                                            string s = DownloadCoords(urlRuian, geocodeRowRuian);
-                                            // determining that if s has value
+                                            #region ruain geocoding
 
-                                            if (s == "")
+                                            if (CbxRuain.IsChecked.Value == true)
                                             {
-                                                geocodeRowRuian = (ulice + " " + co + " " + obec + " " + psc).Trim();
-                                                s = DownloadCoords(urlRuian, geocodeRowRuian);
-                                                if (s == "")
+                                                string geocodeRowRuian =
+                                                    (ulice + " " + cp + " " + co + " " + obec + " " + psc).Trim();
+                                                if (geocodeRowRuian.Equals("")) continue;
+                                                string[] xy;
+                                                // calling webclient for geocoding thru ruian
+                                                string s = DownloadCoords(urlRuian, geocodeRowRuian);
+                                                // determining that if s has value
+
+                                                if (s.Equals(""))
                                                 {
-                                                    geocodeRowRuian = (ulice + " " + cp + " " + obec + " " + psc).Trim();
+                                                    geocodeRowRuian = (ulice + " " + co + " " + obec + " " + psc).Trim();
                                                     s = DownloadCoords(urlRuian, geocodeRowRuian);
-                                                    if (s == "")
+                                                    if (s.Equals(""))
                                                     {
-                                                        geocodeRowRuian = (ulice + " " + obec + " " + psc).Trim();
+                                                        geocodeRowRuian =
+                                                            (ulice + " " + cp + " " + obec + " " + psc).Trim();
                                                         s = DownloadCoords(urlRuian, geocodeRowRuian);
+                                                        if (s.Equals(""))
+                                                        {
+                                                            geocodeRowRuian = (ulice + " " + obec + " " + psc).Trim();
+                                                            s = DownloadCoords(urlRuian, geocodeRowRuian);
+                                                            xy = SplitSourceString(s);
+                                                        }
+                                                        else
+                                                        {
+                                                            xy = SplitSourceString(s);
+                                                        }
+                                                    }
+                                                    else
+                                                    {
                                                         xy = SplitSourceString(s);
                                                     }
-                                                    else { xy = SplitSourceString(s); }
                                                 }
-                                                else { xy = SplitSourceString(s); }
-                                            }
-                                            else { xy = SplitSourceString(s); }
-
-                                            if (s == "")
-                                            {
-                                                coords.Add(0);
-                                                coords.Add(0);
-                                            }
-                                            else
-                                            {
-                                                var x = Convert.ToDouble(xy[0].Insert(0, "-").Replace(".", ","));
-                                                var y = Convert.ToDouble(xy[1].Trim().Insert(0, "-").Replace(".", ","));
-                                                double[] xyTrans = new double[] { x,y };
-                                                //double[] xySjtsk = new double[] { Convert.ToDouble(xy[0].Insert(0, "-").Replace(".", ",")),
-                                                //                            Convert.ToDouble(xy[1].Trim().Insert(0, "-").Replace(".", ","))};
-
-                                                if (CbxWgs.IsChecked.Value == true)
+                                                else
                                                 {
-                                                    //Defines the ending coordiante system
-                                                    ProjectionInfo pStart = KnownCoordinateSystems.Projected.NationalGrids.SJTSKKrovakEastNorth;
-                                                    //Defines the starting coordiante system
-                                                    ProjectionInfo pEnd = KnownCoordinateSystems.Geographic.World.WGS1984;
-                                                    Reproject.ReprojectPoints(xyTrans, new double[] {1}, pStart, pEnd, 0, 1);
-                                                    coords.Add(xyTrans[1]);
-                                                    coords.Add(xyTrans[0]);     
+                                                    xy = SplitSourceString(s);
                                                 }
-                                                // SJTSK coords
-                                                if (CbxSjtsk.IsChecked.Value == true)
-                                                {
-                                                    //coords.Add(Convert.ToDouble(xy[0].Insert(0, "-").Replace(".", ",")));
-                                                    //coords.Add(Convert.ToDouble(xy[1].Trim().Insert(0, "-").Replace(".", ",")));
-                                                    coords.Add(x);
-                                                    coords.Add(y);
-                                                }
-                                            }
-                                        }
-                                        #endregion
-                                        #region GoogleMaps
-                                        // developers.google.com/maps/documentation/geocoding/intro
-                                        if (CbxGm.IsChecked.Value == true)
-                                        {
-                                            string geocodeGm = (ulice + " " + cp + " " + co + " " + obec + " " + psc).Trim();
-                                            if (geocodeGm == "") continue;
-                                            string s = DownloadCoords(urlGoogle, geocodeGm);
-                                            if (RegexBetween(s, "<status>(.*)</status>").Equals("OK"))
-                                            {
-                                                s = RemoveAllAfterFirst(s, "</location>");
-                                                CreateCoordsAndTransform(s, coords, "<lng>(.*)</lng>", "<lat>(.*)</lat>");
-                                            }
-                                            else { AddNulls(coords); }
-                                        }
-                                        #endregion
-                                        #region HereMaps
-                                        // developer.here.com/rest-apis/documentation/geocoder/topics/request-constructing.html
-                                        //developer.here.com/documentation/download/geocoding_nlp/6.2.91/Geocoder%20API%20v6.2.91%20Developer's%20Guide.pdf
-                                        if (CbxHm.IsChecked.Value == true)
-                                        {
-                                            string geocodeHm = (ulice + " " + cp + " " + co + " " + obec + " " + psc).Trim();
-                                            if (geocodeHm == "") continue;
-                                            string s = DownloadCoords(urlHereMaps, geocodeHm);
-                                            if (RegexBetween(s, "<ViewId>(.*)</ViewId>").Equals("0"))
-                                            {
-                                                string partS = RegexBetween(s, "<DisplayPosition>(.*)</DisplayPosition>");
-                                                CreateCoordsAndTransform(partS, coords, "<Longitude>(.*)</Longitude>", "<Latitude>(.*)</Latitude>");
-                                            }
-                                            else { AddNulls(coords); }
-                                        }
-                                        #endregion
-                                        #region MapQuest
-                                        // open.mapquestapi.com/geocoding
-                                        if (CbxMq.IsChecked.Value == true)
-                                        {
-                                            string geocodeMq = (ulice + " " + cp + " " + co + " " + obec + " " + psc).Trim();
-                                            if (geocodeMq == "") continue;
-                                            string s = DownloadCoords(urlMapQ, geocodeMq);
-                                            if (RegexBetween(s, "<statusCode>(.*)</statusCode>").Equals("0"))
-                                            {
-                                                s = RemoveAllAfterFirst(s, "</latLng>");
-                                                CreateCoordsAndTransform(s, coords, "<lng>(.*)</lng>", "<lat>(.*)</lat>");
-                                            }
-                                            else { AddNulls(coords); }
-                                        }
-                                        #endregion
-                                        #region MapyCZ
-                                        // api.mapy.cz
-                                        if (CbxMcz.IsChecked.Value == true)
-                                        {
-                                            string geocodeMcz = (ulice + " " + cp + " " + co + " " + obec + " " + psc).Trim();
-                                            if (geocodeMcz == "") continue;
-                                            string s = DownloadCoords(urlMcz, geocodeMcz);
-                                            if (RegexBetween(s, "message=\"(.*)\" >").Equals("OK") && s.Contains("<item"))
-                                            {
-                                                CreateCoordsAndTransform(s, coords, "x=\"(.*)\"\n", "y=\"(.*)\"\n");
-                                            }
-                                            else { AddNulls(coords); }
-                                        }
-                                        #endregion
-                                        #region OSM
-                                        // wiki.openstreetmap.org/wiki/Nominatim
-                                        if (CbxOsm.IsChecked.Value == true)
-                                        {
-                                            string geocodeOsm = (ulice + " " + cp + " " + co + " " + obec + " " + psc).Trim();
-                                            if (geocodeOsm == "") continue;
-                                            string s = DownloadCoords(urlOsm, geocodeOsm);
-                                            if (RegexBetween(s, "class='(.*)' type").Equals("place"))
-                                            {
-                                                s = RemoveAllAfterFirst(s, " display_name=");
-                                                CreateCoordsAndTransform(s, coords, "lon='(.*)'", "lat='(.*)' lon=");
-                                            }
-                                            else { AddNulls(coords); }
-                                        }
-                                        #endregion
-                                        #region BingMaps
-                                        // msdn.microsoft.com/en-us/library/ff701711.aspx
-                                        if (CbxBm.IsChecked.Value == true)
-                                        {
-                                            string geocodeBm = (ulice + " " + cp + " " + co + " " + obec + " " + psc).Trim();
-                                            if (geocodeBm == "") continue;
-                                            string s = DownloadCoords(urlBm, geocodeBm);
-                                            if (RegexBetween(s, "<StatusDescription>(.*)</StatusDescription>").Equals("OK") &&
-                                                RegexBetween(s, "<EstimatedTotal>(.*)</EstimatedTotal>").Equals("1"))
-                                            {
-                                                s = RemoveAllAfterFirst(s, "</Point>");
-                                                CreateCoordsAndTransform(s, coords, "<Longitude>(.*)</Longitude>", "<Latitude>(.*)</Latitude>");
-                                            }
-                                            else { AddNulls(coords); }
-                                        }
-                                        #endregion
 
+                                                if (s == "")
+                                                {
+                                                    coords.Add(0);
+                                                    coords.Add(0);
+                                                }
+                                                else
+                                                {
+                                                    var x = Convert.ToDouble(xy[0].Insert(0, "-").Replace(".", ","));
+                                                    var y =
+                                                        Convert.ToDouble(xy[1].Trim().Insert(0, "-").Replace(".", ","));
+                                                    double[] xyTrans = new double[] {x, y};
+                                                    //double[] xySjtsk = new double[] { Convert.ToDouble(xy[0].Insert(0, "-").Replace(".", ",")),
+                                                    //                            Convert.ToDouble(xy[1].Trim().Insert(0, "-").Replace(".", ","))};
+
+                                                    if (CbxWgs.IsChecked.Value == true)
+                                                    {
+                                                        //Defines the ending coordiante system
+                                                        ProjectionInfo pStart =
+                                                            KnownCoordinateSystems.Projected.NationalGrids
+                                                                .SJTSKKrovakEastNorth;
+                                                        //Defines the starting coordiante system
+                                                        ProjectionInfo pEnd =
+                                                            KnownCoordinateSystems.Geographic.World.WGS1984;
+                                                        Reproject.ReprojectPoints(xyTrans, new double[] {1}, pStart,
+                                                            pEnd, 0, 1);
+                                                        coords.Add(xyTrans[1]);
+                                                        coords.Add(xyTrans[0]);
+                                                    }
+                                                    // SJTSK coords
+                                                    if (CbxSjtsk.IsChecked.Value == true)
+                                                    {
+                                                        //coords.Add(Convert.ToDouble(xy[0].Insert(0, "-").Replace(".", ",")));
+                                                        //coords.Add(Convert.ToDouble(xy[1].Trim().Insert(0, "-").Replace(".", ",")));
+                                                        coords.Add(x);
+                                                        coords.Add(y);
+                                                    }
+                                                }
+                                            }
+
+                                            #endregion
+
+                                            #region GoogleMaps
+
+                                            // developers.google.com/maps/documentation/geocoding/intro
+                                            if (CbxGm.IsChecked.Value == true)
+                                            {
+                                                string geocodeGm =
+                                                    (ulice + " " + cp + " " + co + " " + obec + " " + psc).Trim();
+                                                if (geocodeGm == "") continue;
+                                                string s = DownloadCoords(urlGoogle, geocodeGm);
+                                                if (RegexBetween(s, "<status>(.*)</status>").Equals("OK"))
+                                                {
+                                                    s = RemoveAllAfterFirst(s, "</location>");
+                                                    CreateCoordsAndTransform(s, coords, "<lng>(.*)</lng>",
+                                                        "<lat>(.*)</lat>");
+                                                }
+                                                else
+                                                {
+                                                    AddNulls(coords);
+                                                }
+                                            }
+
+                                            #endregion
+
+                                            #region HereMaps
+
+                                            // developer.here.com/rest-apis/documentation/geocoder/topics/request-constructing.html
+                                            //developer.here.com/documentation/download/geocoding_nlp/6.2.91/Geocoder%20API%20v6.2.91%20Developer's%20Guide.pdf
+                                            if (CbxHm.IsChecked.Value == true)
+                                            {
+                                                string geocodeHm =
+                                                    (ulice + " " + cp + " " + co + " " + obec + " " + psc).Trim();
+                                                if (geocodeHm == "") continue;
+                                                string s = DownloadCoords(urlHereMaps, geocodeHm);
+                                                if (RegexBetween(s, "<ViewId>(.*)</ViewId>").Equals("0"))
+                                                {
+                                                    string partS = RegexBetween(s,
+                                                        "<DisplayPosition>(.*)</DisplayPosition>");
+                                                    CreateCoordsAndTransform(partS, coords,
+                                                        "<Longitude>(.*)</Longitude>", "<Latitude>(.*)</Latitude>");
+                                                }
+                                                else
+                                                {
+                                                    AddNulls(coords);
+                                                }
+                                            }
+
+                                            #endregion
+
+                                            #region MapQuest
+
+                                            // open.mapquestapi.com/geocoding
+                                            if (CbxMq.IsChecked.Value == true)
+                                            {
+                                                string geocodeMq =
+                                                    (ulice + " " + cp + " " + co + " " + obec + " " + psc).Trim();
+                                                if (geocodeMq == "") continue;
+                                                string s = DownloadCoords(urlMapQ, geocodeMq);
+                                                if (RegexBetween(s, "<statusCode>(.*)</statusCode>").Equals("0"))
+                                                {
+                                                    s = RemoveAllAfterFirst(s, "</latLng>");
+                                                    CreateCoordsAndTransform(s, coords, "<lng>(.*)</lng>",
+                                                        "<lat>(.*)</lat>");
+                                                }
+                                                else
+                                                {
+                                                    AddNulls(coords);
+                                                }
+                                            }
+
+                                            #endregion
+
+                                            #region MapyCZ
+
+                                            // api.mapy.cz
+                                            if (CbxMcz.IsChecked.Value == true)
+                                            {
+                                                string geocodeMcz =
+                                                    (ulice + " " + cp + " " + co + " " + obec + " " + psc).Trim();
+                                                if (geocodeMcz == "") continue;
+                                                string s = DownloadCoords(urlMcz, geocodeMcz);
+                                                if (RegexBetween(s, "message=\"(.*)\" >").Equals("OK") &&
+                                                    s.Contains("<item"))
+                                                {
+                                                    CreateCoordsAndTransform(s, coords, "x=\"(.*)\"\n", "y=\"(.*)\"\n");
+                                                }
+                                                else
+                                                {
+                                                    AddNulls(coords);
+                                                }
+                                            }
+
+                                            #endregion
+
+                                            #region OSM
+
+                                            // wiki.openstreetmap.org/wiki/Nominatim
+                                            if (CbxOsm.IsChecked.Value == true)
+                                            {
+                                                string geocodeOsm =
+                                                    (ulice + " " + cp + " " + co + " " + obec + " " + psc).Trim();
+                                                if (geocodeOsm == "") continue;
+                                                string s = DownloadCoords(urlOsm, geocodeOsm);
+                                                if (RegexBetween(s, "class='(.*)' type").Equals("place"))
+                                                {
+                                                    s = RemoveAllAfterFirst(s, " display_name=");
+                                                    CreateCoordsAndTransform(s, coords, "lon='(.*)'", "lat='(.*)' lon=");
+                                                }
+                                                else
+                                                {
+                                                    AddNulls(coords);
+                                                }
+                                            }
+
+                                            #endregion
+
+                                            #region BingMaps
+
+                                            // msdn.microsoft.com/en-us/library/ff701711.aspx
+                                            if (CbxBm.IsChecked.Value == true)
+                                            {
+                                                string geocodeBm =
+                                                    (ulice + " " + cp + " " + co + " " + obec + " " + psc).Trim();
+                                                if (geocodeBm == "") continue;
+                                                string s = DownloadCoords(urlBm, geocodeBm);
+                                                if (
+                                                    RegexBetween(s, "<StatusDescription>(.*)</StatusDescription>")
+                                                        .Equals("OK") &&
+                                                    RegexBetween(s, "<EstimatedTotal>(.*)</EstimatedTotal>").Equals("1"))
+                                                {
+                                                    s = RemoveAllAfterFirst(s, "</Point>");
+                                                    CreateCoordsAndTransform(s, coords, "<Longitude>(.*)</Longitude>",
+                                                        "<Latitude>(.*)</Latitude>");
+                                                }
+                                                else
+                                                {
+                                                    AddNulls(coords);
+                                                }
+                                            }
+
+                                            #endregion
+                                        }
+                                        else
+                                        {
+                                            AddNulls(coords);
+                                        }
                                         #region write values to row for all APIs
                                         for (int j = 0; j < coords.Count; j++)
                                         {
