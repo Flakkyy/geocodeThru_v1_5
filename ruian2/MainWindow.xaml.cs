@@ -200,7 +200,8 @@ namespace GeocodeThru
                             {
                                 try
                                 {
-                                    RtbProgress.AppendText("[" + DateTime.Now.ToLongTimeString() + "] STARTING GEOCODING\r");
+                                    RtbProgress.AppendText("[" + DateTime.Now.ToLongTimeString() +
+                                                           "] STARTING GEOCODING\r");
                                     DoEvents();
                                     EnableObjects(false);
                                     _excelWorkBook.Unprotect();
@@ -209,11 +210,26 @@ namespace GeocodeThru
                                     int[] indexy = new int[5];
                                     for (int c = 1; c <= _columnCount; c++)
                                     {
-                                        if (_excelWorkSheet.Cells[1, c].Value.ToString() == CbxUlice.Text) { indexy[0] = c; }
-                                        if (_excelWorkSheet.Cells[1, c].Value.ToString() == CbxCp.Text) { indexy[1] = c; }
-                                        if (_excelWorkSheet.Cells[1, c].Value.ToString() == CbxCo.Text) { indexy[2] = c; }
-                                        if (_excelWorkSheet.Cells[1, c].Value.ToString() == CbxObec.Text) { indexy[3] = c; }
-                                        if (_excelWorkSheet.Cells[1, c].Value.ToString() == CbxPsc.Text) { indexy[4] = c; }
+                                        if (_excelWorkSheet.Cells[1, c].Value.ToString() == CbxUlice.Text)
+                                        {
+                                            indexy[0] = c;
+                                        }
+                                        if (_excelWorkSheet.Cells[1, c].Value.ToString() == CbxCp.Text)
+                                        {
+                                            indexy[1] = c;
+                                        }
+                                        if (_excelWorkSheet.Cells[1, c].Value.ToString() == CbxCo.Text)
+                                        {
+                                            indexy[2] = c;
+                                        }
+                                        if (_excelWorkSheet.Cells[1, c].Value.ToString() == CbxObec.Text)
+                                        {
+                                            indexy[3] = c;
+                                        }
+                                        if (_excelWorkSheet.Cells[1, c].Value.ToString() == CbxPsc.Text)
+                                        {
+                                            indexy[4] = c;
+                                        }
                                     }
                                     // write a header for coordinates, cbx 
                                     int i = 0;
@@ -254,24 +270,34 @@ namespace GeocodeThru
                                     List<double> coords = new List<double>();
 
                                     #region urls and keys for APIs
-                                    string urlRuian = "http://www.vugtk.cz/euradin/services/rest.py/Geocode/text?SearchText={0}&SuppressID=off";
+
+                                    string urlRuian =
+                                        "http://www.vugtk.cz/euradin/services/rest.py/Geocode/text?SearchText={0}&SuppressID=off";
                                     string keyGm = TxtboxGmKey.Text;
                                     // console.developers.google.com/project/sixth-shield-109215/apiui/credential
-                                    string urlGoogle = "https://maps.googleapis.com/maps/api/geocode/xml?address={0}&key=" + keyGm;
+                                    string urlGoogle =
+                                        "https://maps.googleapis.com/maps/api/geocode/xml?address={0}&key=" + keyGm;
 
                                     string hmAppId = TxtboxHmAppId.Text; //"O5Xux7fAgmj4kSi67XbA";
                                     string hmAppCode = TxtboxHmAppCode.Text; //"cbeXpCRSVWo9kc17HbtHEA";
-                                    string urlHereMaps = "http://geocoder.cit.api.here.com/6.2/geocode.xml?app_id=" + hmAppId + "&app_code=" + hmAppCode + "&gen=9&searchtext={0}";
+                                    string urlHereMaps = "http://geocoder.cit.api.here.com/6.2/geocode.xml?app_id=" +
+                                                         hmAppId + "&app_code=" + hmAppCode + "&gen=9&searchtext={0}";
 
                                     string keyMapQ = TxtboxMqKey.Text; //"2i74YRgMWpE5GJoOlkFpy57yINNjQQ1V";
-                                    string urlMapQ = "http://open.mapquestapi.com/geocoding/v1/address?key=" + keyMapQ + "&outFormat=xml&maxResults=1&thumbMaps=false&location={0}";
+                                    string urlMapQ = "http://open.mapquestapi.com/geocoding/v1/address?key=" + keyMapQ +
+                                                     "&outFormat=xml&maxResults=1&thumbMaps=false&location={0}";
 
                                     string urlMcz = "http://api.mapy.cz/geocode?query={0}";
-                                    string urlOsm = "http://nominatim.openstreetmap.org/search/cz/{0}?format=xml&polygon=0&addressdetails=1&limit=1";
+                                    string urlOsm =
+                                        "http://nominatim.openstreetmap.org/search/cz/{0}?format=xml&polygon=0&addressdetails=1&limit=1";
 
-                                    string keyBingM = TxtboxBmKey.Text; //"wrIA0ucuQwsQUxP6OAZP~GcpFgalVzrLfG6E-qgBnaQ~AhcLmtVfz7TlpdyF12sCtimnxcho0RXl_eW_FRJIYlDjaiGiq-a1lc2cZOxmKBIb";
-                                                                        // msdn.microsoft.com/en-us/library/gg650598.aspx
-                                    string urlBm = "http://dev.virtualearth.net/REST/v1/Locations?q={0}&o=xml&maxRes=1&key=" + keyBingM;
+                                    string keyBingM = TxtboxBmKey.Text;
+                                    //"wrIA0ucuQwsQUxP6OAZP~GcpFgalVzrLfG6E-qgBnaQ~AhcLmtVfz7TlpdyF12sCtimnxcho0RXl_eW_FRJIYlDjaiGiq-a1lc2cZOxmKBIb";
+                                    // msdn.microsoft.com/en-us/library/gg650598.aspx
+                                    string urlBm =
+                                        "http://dev.virtualearth.net/REST/v1/Locations?q={0}&o=xml&maxRes=1&key=" +
+                                        keyBingM;
+
                                     #endregion
 
                                     for (int r = startingRow; r <= _rowCount; r++)
@@ -282,13 +308,17 @@ namespace GeocodeThru
                                             MItemQuit.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
                                         }
                                         // printing which record is processing now
-                                        RtbProgress.AppendText("-----------------------------------------------------------------\r");
                                         RtbProgress.AppendText(
-                                            "[" + DateTime.Now.ToLongTimeString() + $"] Processing record {r.ToString()} out of {_rowCount.ToString()}\r");
+                                            "-----------------------------------------------------------------\r");
+                                        RtbProgress.AppendText(
+                                            "[" + DateTime.Now.ToLongTimeString() +
+                                            $"] Processing record {r.ToString()} out of {_rowCount.ToString()}\r");
                                         RtbProgress.ScrollToEnd();
                                         DoEvents();
                                         // getting values of each cells
+
                                         #region values of cells
+
                                         string ulice;
                                         string cp;
                                         string co;
@@ -341,7 +371,10 @@ namespace GeocodeThru
                                             else
                                             {
                                                 obec = _excelWorkSheet.Cells[r, indexy[3]].Value.ToString().Trim();
-                                                obec = RemoveDigits(obec);
+                                                if (!ulice.Equals("") && !cp.Equals("") && !co.Equals(""))
+                                                {
+                                                    obec = RemoveDigits(obec);
+                                                }
                                                 obec = RemoveAllAfterFirst(obec, "-");
                                                 obec = RemoveStrings(obec);
                                             }
@@ -356,11 +389,15 @@ namespace GeocodeThru
                                                 psc = ReplaceCharacters(psc, " ", "");
                                             }
                                         }
+
                                         #endregion
-                                        RtbProgress.AppendText("Adress: " + (ulice + " " + cp + "/" + co + " " + obec + " " + psc).Trim() + "\r");
+
+                                        RtbProgress.AppendText("Adress: " +
+                                                               (ulice + " " + cp + "/" + co + " " + obec + " " + psc)
+                                                                   .Trim() + "\r");
                                         RtbProgress.ScrollToEnd();
                                         string adress = (ulice + " " + cp + " " + co + " " + obec + " " + psc).Trim();
-                                        if (adress.Equals(""))
+                                        if (!adress.Equals(""))
                                         {
                                             #region ruain geocoding
 
@@ -406,15 +443,14 @@ namespace GeocodeThru
 
                                                 if (s == "")
                                                 {
-                                                    coords.Add(0);
-                                                    coords.Add(0);
+                                                    AddNulls(coords);
                                                 }
                                                 else
                                                 {
                                                     var x = Convert.ToDouble(xy[0].Insert(0, "-").Replace(".", ","));
                                                     var y =
                                                         Convert.ToDouble(xy[1].Trim().Insert(0, "-").Replace(".", ","));
-                                                    double[] xyTrans = new double[] {x, y};
+                                                    double[] xyTrans = new double[] { x, y };
                                                     //double[] xySjtsk = new double[] { Convert.ToDouble(xy[0].Insert(0, "-").Replace(".", ",")),
                                                     //                            Convert.ToDouble(xy[1].Trim().Insert(0, "-").Replace(".", ","))};
 
@@ -427,7 +463,7 @@ namespace GeocodeThru
                                                         //Defines the starting coordiante system
                                                         ProjectionInfo pEnd =
                                                             KnownCoordinateSystems.Geographic.World.WGS1984;
-                                                        Reproject.ReprojectPoints(xyTrans, new double[] {1}, pStart,
+                                                        Reproject.ReprojectPoints(xyTrans, new double[] { 1 }, pStart,
                                                             pEnd, 0, 1);
                                                         coords.Add(xyTrans[1]);
                                                         coords.Add(xyTrans[0]);
@@ -588,9 +624,11 @@ namespace GeocodeThru
                                         }
                                         else
                                         {
-                                            AddNulls(coords);
+                                            continue;
                                         }
+
                                         #region write values to row for all APIs
+
                                         for (int j = 0; j < coords.Count; j++)
                                         {
                                             // ReSharper disable once CompareOfFloatsByEqualityOperator
@@ -603,7 +641,9 @@ namespace GeocodeThru
                                                 _excelWorkSheet.Cells[r, _columnCount + j + 1].Value = coords[j];
                                             }
                                         }
+
                                         #endregion
+
                                         coords.Clear();
                                         // updating progress bar and progress text on groupbox                                        
                                         float hodnota = r / (float)_rowCount;
@@ -621,7 +661,8 @@ namespace GeocodeThru
                                     RtbProgress.AppendText("-----------------\r");
                                     RtbProgress.AppendText("| COMPLETED! |\r");
                                     RtbProgress.AppendText("-----------------\r");
-                                    RtbProgress.AppendText("PLEASE RESET THE APPLICATION, IF YOU WANT TO USE ANOTHER GEOCODING.\r");
+                                    RtbProgress.AppendText(
+                                        "PLEASE RESET THE APPLICATION, IF YOU WANT TO USE ANOTHER GEOCODING.\r");
                                     RtbProgress.ScrollToEnd();
 
                                     MItemStart.IsEnabled = false;
@@ -629,7 +670,8 @@ namespace GeocodeThru
                                 }
                                 catch (Exception ex)
                                 {
-                                    MessageBox.Show("A handled exception just occurred: " + ex.Message, "Exception", MessageBoxButton.OK, MessageBoxImage.Warning);
+                                    MessageBox.Show("A handled exception just occurred: " + ex.Message, "Exception",
+                                        MessageBoxButton.OK, MessageBoxImage.Warning);
                                 }
                                 // Close excel
                                 //_excelWorkBook.Protect();
@@ -678,7 +720,7 @@ namespace GeocodeThru
                 if (CbxSjtsk.IsChecked.Value == true)
                 {
                     coordsList.Add(xy[0]);
-                    coordsList.Add(xy[1]); 
+                    coordsList.Add(xy[1]);
                 }
             }
             catch (Exception ex)
@@ -785,9 +827,16 @@ namespace GeocodeThru
         /// <returns></returns>
         string DownloadCoords(string url, string inputSearch)
         {
-            WebDownload wc = new WebDownload { Timeout = 15000 };
-            string s = wc.DownloadString(String.Format(url, inputSearch));
-            return s;
+            try
+            {
+                WebDownload wc = new WebDownload();
+                string s = wc.DownloadString(String.Format(url, inputSearch));
+                return s;
+            }
+            catch (TimeoutException)
+            {
+                return "";
+            }
         }
         /// <summary>
         /// remove digits from string
@@ -1373,7 +1422,7 @@ namespace GeocodeThru
         /// </summary>
         public int Timeout { get; set; }
 
-        public WebDownload() : this(10000) { }
+        public WebDownload() : this(15000) { }
 
         public WebDownload(int timeout)
         {
